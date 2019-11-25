@@ -8,7 +8,10 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
     - uses: actions/checkout@v1
 
@@ -17,4 +20,9 @@ jobs:
     - uses: ./
       with:
         version: 2019.11.23
-    - run: echo '(def x (def x 1))' | clj-kondo --lint -
+    - name: Run clj-kondo on ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: clj-kondo --lint src
+    - name: Run clj-kondo on windows
+      if: matrix.os == 'windows-latest'
+      run: clj-kondo.exe --lint src

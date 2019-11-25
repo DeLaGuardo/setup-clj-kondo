@@ -1,10 +1,9 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Setup clj-kondo'
+description: 'Provision hosted runner with clj-kondo'
+author: 'DeLaGuardo'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  version:
+    description: 'desired version of clj-kondo to install'
 runs:
   using: 'node12'
   main: 'lib/main.js'
