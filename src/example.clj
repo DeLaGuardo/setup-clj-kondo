@@ -1,3 +1,4 @@
 (ns example)
 
-(def x 1)
+(def x
+  (def x 2))
