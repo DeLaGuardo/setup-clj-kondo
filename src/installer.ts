@@ -50,15 +50,15 @@ export async function getCljKondo(version: string): Promise<void> {
             tempDirectory,
             'temp_' + Math.floor(Math.random() * 2000000000)
         );
-        const kondoDir = await unzipKondoDownload(
+        const kondoBin = await unzipKondoDownload(
             kondoFile,
             tempDir
         );
 
-        core.info(`clj-kondo extracted to ${kondoDir}`);
+        core.info(`clj-kondo extracted to ${tempDir}/${kondoBin}`);
 
         toolPath = await tc.cacheDir(
-            kondoDir,
+            tempDir,
             'CljKondo',
             getCacheVersionString(version)
         );
