@@ -17,3 +17,4 @@ jobs:
     - uses: ./
       with:
         version: 2019.11.23
+    - run: echo '(def x (def x 1))' | clj-kondo --lint -
