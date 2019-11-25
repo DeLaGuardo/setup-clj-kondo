@@ -1,6 +1,9 @@
 name: 'Setup clj-kondo'
 description: 'Provision hosted runner with clj-kondo'
 author: 'DeLaGuardo'
+branding:
+  icon: 'gift'
+  color: 'blue'
 inputs:
   version:
     description: 'desired version of clj-kondo to install'
