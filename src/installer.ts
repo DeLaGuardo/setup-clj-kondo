@@ -55,7 +55,7 @@ export async function getCljKondo(version: string): Promise<void> {
             tempDir
         );
 
-        core.debug(`clj-kondo extracted to ${kondoDir}`);
+        core.info(`clj-kondo extracted to ${kondoDir}`);
 
         toolPath = await tc.cacheDir(
             kondoDir,
