@@ -18,4 +18,4 @@ jobs:
       with:
         version: 2019.11.23
         path-to-lint: src
-    - run: echo '(def x (def x 1))' | clj-kondo --lint -
+    - run: echo '(def x 1)' | clj-kondo --lint -
