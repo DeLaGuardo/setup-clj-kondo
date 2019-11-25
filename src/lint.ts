@@ -25,53 +25,68 @@ async function run(): Promise<void> {
     const githubToken = core.getInput('github-token', {required: true});
     const octokit = new GitHub(githubToken);
 
-    let data = await octokit.checks.create({
+    let {data: {id}} = await octokit.checks.create({
         ...context.repo,
         name: 'clj-kondo check',
         head_sha: context.sha
     })
 
-    core.info(JSON.stringify(data))
-
     let args = [];
     let kondoOutput = '';
-    let output = { findings: []}
+    let output: { findings: [],
+                  summary: {
+                      error: number,
+                      warning: number,
+                      info: number,
+                      duration: number
+                  }
+                };
     let kondoError = '';
-    const options = {listeners: {}};
-    options.listeners = {
-        stdout: (data: Buffer) => {
-            kondoOutput += data.toString();
-        },
-        stderr: (data: Buffer) => {
-            kondoError += data.toString();
-        }
-    };
-
-    let exitCode = await exec.exec(kondoBin, ['--lint', pathToLint, '--config', '{:output {:format :json}}'], options);
+    let exitCode = await exec.exec(
+        kondoBin,
+        ['--lint', pathToLint, '--config', '{:output {:format :json}}'],
+        {
+            ignoreReturnCode: true,
+            listeners: {
+                stdout: (data: Buffer) => {
+                    kondoOutput += data.toString();
+                },
+                stderr: (data: Buffer) => {
+                    kondoError += data.toString();
+                }
+        }}
+    );
 
     if (exitCode === 2 || exitCode === 3) {
         output = JSON.parse(kondoOutput);
         for (const c of chunk(output.findings, 50)) {
-            let annotations: {}[] = [];
+            let annotations: {
+                path: string,
+                annotation_level: string,
+                start_line: number,
+                end_line: number,
+                message: string}[] = [];
             for (const f of c) {
-                const { filename, level, type, col, row, message } = f;
+                const { filename, level, type, row, message } = f;
                 annotations.push({
                     path: filename,
                     start_line: row,
                     end_line: row,
-                    annotations_level: annotationLevels[level],
+                    annotation_level: annotationLevels[level],
                     message: `[${type}] ${message}`
                 })
             }
-            // await octokit.checks.update({
-            //     ...context.repo,
-            //     check_run_id: checkId
-            // })
-            core.info(JSON.stringify(annotations));
+            await octokit.checks.update({
+                ...context.repo,
+                check_run_id: id,
+                output: {
+                    annotations,
+                    title: 'Report from clj-kondo',
+                    summary: `linting took ${output.summary.duration}ms, errors: ${output.summary.error}, warnings: ${output.summary.warning}, info: ${output.summary.info}`
+                }
+            })
         }
     }
-
-    core.info(`output: ${kondoOutput}, error: ${kondoError}`);
 }
 
 run();
