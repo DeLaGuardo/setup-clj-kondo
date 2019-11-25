@@ -4,10 +4,6 @@ author: 'DeLaGuardo'
 inputs:
   version:
     description: 'desired version of clj-kondo to install'
-  path-to-lint:
-    description: 'static path to file or directory or command prefixed with `$` to calculate classpath'
 runs:
   using: 'node12'
   main: 'lib/main.js'
-  post: 'lib/lint.js'
-  post-if: 'success()'
