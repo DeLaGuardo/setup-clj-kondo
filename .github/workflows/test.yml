@@ -21,3 +21,4 @@ jobs:
       with:
         version: 2019.11.23
         path-to-lint: src
+        github-token: ${{ secrets.GITHUB_TOKEN }}
