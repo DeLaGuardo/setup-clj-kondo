@@ -6,7 +6,7 @@ This action sets up clj-kondo for using in GitHub Actions.
 
 ```yaml
 steps:
-- uses: DeLaGuardo/setup-clj-kondo@v1
+- uses: DeLaGuardo/setup-clj-kondo@master
   with:
     version: '2020.04.05'
 

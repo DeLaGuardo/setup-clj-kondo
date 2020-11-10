@@ -1,10 +1,6 @@
 name: "Test setup-clj-kondo"
-on:
-  pull_request:
-  push:
-    branches:
-      - master
-      - 'releases/*'
+
+on: push
 
 jobs:
   test:
